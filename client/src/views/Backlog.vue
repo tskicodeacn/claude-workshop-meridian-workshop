@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="backlog">
     <div class="page-header">
       <h2>Backlog Management</h2>
@@ -124,7 +124,7 @@ export default {
         allBacklogItems.value = backlogData
         inventoryItems.value = inventoryData
       } catch (err) {
-        error.value = 'Failed to load backlog: ' + err.message
+        error.value = t('common.loadError')
       } finally {
         loading.value = false
       }

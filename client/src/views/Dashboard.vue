@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="dashboard">
     <div class="page-header">
       <h2>{{ t('dashboard.title') }}</h2>
@@ -577,7 +577,7 @@ export default {
         inventoryItems.value = inventoryData
         allBacklogItems.value = backlogData
       } catch (err) {
-        error.value = 'Failed to load dashboard data: ' + err.message
+        error.value = t('common.loadError')
       } finally {
         loading.value = false
       }

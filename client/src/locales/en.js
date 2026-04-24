@@ -378,6 +378,7 @@ export default {
     search: 'Search',
     filter: 'Filter',
     export: 'Export',
-    items: 'items'
+    items: 'items',
+    loadError: 'Failed to load data. Please try again.'
   }
 }

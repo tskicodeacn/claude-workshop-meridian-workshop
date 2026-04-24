@@ -378,7 +378,8 @@ export default {
     search: '検索',
     filter: 'フィルター',
     export: 'エクスポート',
-    items: '件'
+    items: '件',
+    loadError: 'データの読み込みに失敗しました。もう一度お試しください。'
   },
 
   // Product Names

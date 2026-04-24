@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="inventory">
     <div class="page-header">
       <h2>{{ t('inventory.title') }}</h2>
@@ -189,7 +189,7 @@ export default {
           category: filters.category
         })
       } catch (err) {
-        error.value = 'Failed to load inventory: ' + err.message
+        error.value = t('common.loadError')
       } finally {
         loading.value = false
       }

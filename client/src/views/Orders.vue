@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="orders">
     <div class="page-header">
       <h2>{{ t('orders.title') }}</h2>
@@ -118,7 +118,7 @@ export default {
           return dateA - dateB
         })
       } catch (err) {
-        error.value = 'Failed to load orders: ' + err.message
+        error.value = t('common.loadError')
       } finally {
         loading.value = false
       }

@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="restocking">
     <div class="page-header">
       <h2>{{ t('restocking.title') }}</h2>
@@ -142,7 +142,7 @@ export default {
         if (activeBudget.value) filters.budget = activeBudget.value
         recommendations.value = await api.getRestockingRecommendations(filters)
       } catch (err) {
-        error.value = 'Failed to load recommendations: ' + err.message
+        error.value = t('common.loadError')
       } finally {
         loading.value = false
       }

@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="demand">
     <div class="page-header">
       <h2>{{ t('demand.title') }}</h2>
@@ -155,7 +155,7 @@ export default {
         allForecasts.value = forecastsData
         inventoryItems.value = inventoryData
       } catch (err) {
-        error.value = 'Failed to load demand forecasts: ' + err.message
+        error.value = t('common.loadError')
       } finally {
         loading.value = false
       }

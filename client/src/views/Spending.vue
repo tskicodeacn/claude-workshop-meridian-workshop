@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="spending">
     <div class="page-header">
       <h2>{{ t('finance.title') }}</h2>
@@ -364,7 +364,7 @@ export default {
         allTransactions.value = transactionsRes
         allOrders.value = ordersRes
       } catch (err) {
-        error.value = 'Failed to load financial data: ' + err.message
+        error.value = t('common.loadError')
       } finally {
         loading.value = false
       }

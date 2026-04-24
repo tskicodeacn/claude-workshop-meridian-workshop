@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="reports">
     <div class="page-header">
       <h2>{{ t('reports.title') }}</h2>
@@ -184,7 +184,7 @@ export default {
         quarterlyData.value = quarterly
         monthlyData.value = monthly
       } catch (err) {
-        error.value = 'Failed to load reports: ' + err.message
+        error.value = t('common.loadError')
       } finally {
         loading.value = false
       }
