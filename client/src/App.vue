@@ -179,7 +179,7 @@ export default {
 <style>
 /* ── Theme variables ─────────────────────────────────────── */
 :root {
-  --bg-body:        #f8fafc;
+  --bg-body:        #f1f5f9;
   --bg-nav:         #ffffff;
   --bg-card:        #ffffff;
   --bg-thead:       #f8fafc;
@@ -198,14 +198,17 @@ export default {
   --nav-active-bg:  #eff6ff;
   --nav-active-text:#2563eb;
   --nav-active-bar: #2563eb;
-  --shadow-nav:     rgba(0,0,0,0.05);
-  --shadow-card:    rgba(0,0,0,0.06);
+  --shadow-nav:     0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-card:    0 4px 16px rgba(0,0,0,0.07), 0 1px 3px rgba(0,0,0,0.04);
+  --shadow-card-sm: 0 1px 4px rgba(0,0,0,0.06);
+  --radius-card:    12px;
+  --radius-badge:   6px;
 }
 
 [data-theme="dark"] {
-  --bg-body:        #0f172a;
-  --bg-nav:         #1e293b;
-  --bg-card:        #1e293b;
+  --bg-body:        #0a0f1e;
+  --bg-nav:         #111827;
+  --bg-card:        #1a2235;
   --bg-thead:       #0f172a;
   --bg-row-hover:   #162032;
   --text-primary:   #f1f5f9;
@@ -213,17 +216,18 @@ export default {
   --text-muted:     #94a3b8;
   --text-table:     #cbd5e1;
   --text-th:        #94a3b8;
-  --border:         #334155;
+  --border:         #2d3a52;
   --border-light:   #1e293b;
-  --border-subtle:  #475569;
+  --border-subtle:  #3d4f6e;
   --nav-link:       #94a3b8;
   --nav-hover-bg:   #0f172a;
   --nav-hover-text: #f1f5f9;
   --nav-active-bg:  #172554;
   --nav-active-text:#60a5fa;
   --nav-active-bar: #60a5fa;
-  --shadow-nav:     rgba(0,0,0,0.3);
-  --shadow-card:    rgba(0,0,0,0.2);
+  --shadow-nav:     0 1px 3px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.3);
+  --shadow-card:    0 4px 16px rgba(0,0,0,0.3), 0 1px 3px rgba(0,0,0,0.2);
+  --shadow-card-sm: 0 1px 4px rgba(0,0,0,0.2);
 }
 
 /* ── Reset ────────────────────────────────────────────────── */
@@ -244,11 +248,11 @@ body {
 .top-nav {
   background: var(--bg-nav);
   border-bottom: 1px solid var(--border);
-  box-shadow: 0 1px 3px 0 var(--shadow-nav);
+  box-shadow: var(--shadow-nav);
   position: sticky;
   top: 0;
   z-index: 100;
-  transition: background 0.2s, border-color 0.2s;
+  transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
 }
 
 .nav-container {
@@ -355,13 +359,14 @@ body {
 
 .stat-card {
   background: var(--bg-card);
-  padding: 1.25rem;
-  border-radius: 10px;
+  padding: 1.25rem 1.5rem;
+  border-radius: var(--radius-card);
   border: 1px solid var(--border);
+  box-shadow: var(--shadow-card-sm);
   transition: all 0.2s ease;
 }
 
-.stat-card:hover { border-color: var(--border-subtle); box-shadow: 0 4px 12px var(--shadow-card); }
+.stat-card:hover { border-color: var(--border-subtle); box-shadow: var(--shadow-card); transform: translateY(-1px); }
 
 .stat-label {
   color: var(--text-muted);
@@ -374,6 +379,11 @@ body {
 
 .stat-value { font-size: 2.25rem; font-weight: 700; color: var(--text-primary); letter-spacing: -0.025em; }
 
+.stat-card.warning { border-top: 3px solid #ea580c; }
+.stat-card.success { border-top: 3px solid #059669; }
+.stat-card.danger  { border-top: 3px solid #dc2626; }
+.stat-card.info    { border-top: 3px solid #2563eb; }
+
 .stat-card.warning .stat-value { color: #ea580c; }
 .stat-card.success .stat-value { color: #059669; }
 .stat-card.danger  .stat-value { color: #dc2626; }
@@ -382,11 +392,12 @@ body {
 /* ── Card ─────────────────────────────────────────────────── */
 .card {
   background: var(--bg-card);
-  border-radius: 10px;
+  border-radius: var(--radius-card);
   padding: 1.25rem;
   border: 1px solid var(--border);
+  box-shadow: var(--shadow-card-sm);
   margin-bottom: 1.25rem;
-  transition: background 0.2s, border-color 0.2s;
+  transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
 }
 
 .card-header {
@@ -434,12 +445,12 @@ tbody tr:hover { background: var(--bg-row-hover); }
 /* ── Badges ───────────────────────────────────────────────── */
 .badge {
   display: inline-block;
-  padding: 0.313rem 0.75rem;
-  border-radius: 6px;
-  font-size: 0.75rem;
-  font-weight: 600;
+  padding: 0.25rem 0.625rem;
+  border-radius: 20px;
+  font-size: 0.688rem;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.025em;
+  letter-spacing: 0.04em;
 }
 
 .badge.success    { background: #d1fae5; color: #065f46; }

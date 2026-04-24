@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(start \"\" \"c:\\\\Users\\\\tomasz.skibicki\\\\OneDrive - Accenture\\\\_SZKOLENIA\\\\ClaudeCode\\\\claude-workshop\\\\git-meridian-workshop-main\\\\proposal\\\\capabilities-deck.html\")",
+      "Bash(netstat -aon)",
+      "Bash(findstr \":3000 \\\\|:8001 \")",
+      "Bash(findstr \"LISTENING\")",
+      "PowerShell(Get-Command uv -ErrorAction SilentlyContinue)",
+      "mcp__playwright__browser_navigate",
+      "mcp__playwright__browser_take_screenshot",
+      "PowerShell(netstat -aon)",
+      "mcp__playwright__browser_click",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(gh auth *)",
+      "Bash(git remote *)",
+      "mcp__playwright__browser_wait_for",
+      "mcp__playwright__browser_evaluate"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\tomasz.skibicki\\OneDrive - Accenture\\_SZKOLENIA\\ClaudeCode\\claude-workshop\\git-meridian-workshop-main\\proposal"
+    ]
+  }
+}
