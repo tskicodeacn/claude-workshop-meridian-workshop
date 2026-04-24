@@ -2,7 +2,7 @@
   <div class="filters-bar">
     <div class="filters-container">
       <div class="filters-grid">
-        <div class="filter-group">
+        <div v-if="showPeriod" class="filter-group">
           <label>{{ t('filters.timePeriod') }}</label>
           <select v-model="selectedPeriod" class="filter-select">
             <option value="all">{{ t('filters.allMonths') }}</option>
@@ -43,7 +43,7 @@
           </select>
         </div>
 
-        <div class="filter-group">
+        <div v-if="showStatus" class="filter-group">
           <label>{{ t('filters.orderStatus') }}</label>
           <select v-model="selectedStatus" class="filter-select">
             <option value="all">{{ t('filters.all') }}</option>
@@ -70,12 +70,19 @@
 </template>
 
 <script>
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
 import { useFilters } from '../composables/useFilters'
 import { useI18n } from '../composables/useI18n'
+
+// Routes where each filter is relevant
+const PERIOD_ROUTES = ['/', '/orders', '/spending', '/demand', '/reports']
+const STATUS_ROUTES = ['/orders']
 
 export default {
   name: 'FilterBar',
   setup() {
+    const route = useRoute()
     const {
       selectedPeriod,
       selectedLocation,
@@ -87,6 +94,9 @@ export default {
 
     const { t } = useI18n()
 
+    const showPeriod = computed(() => PERIOD_ROUTES.includes(route.path))
+    const showStatus = computed(() => STATUS_ROUTES.includes(route.path))
+
     return {
       t,
       selectedPeriod,
@@ -94,7 +104,9 @@ export default {
       selectedCategory,
       selectedStatus,
       hasActiveFilters,
-      resetFilters
+      resetFilters,
+      showPeriod,
+      showStatus
     }
   }
 }
@@ -102,12 +114,13 @@ export default {
 
 <style scoped>
 .filters-bar {
-  background: #f8fafc;
-  border-bottom: 1px solid #e2e8f0;
+  background: var(--bg-nav);
+  border-bottom: 1px solid var(--border);
   padding: 0.75rem 0;
   position: sticky;
   top: 70px;
   z-index: 90;
+  transition: background 0.2s, border-color 0.2s;
 }
 
 .filters-container {
@@ -135,60 +148,46 @@ export default {
 .filter-group label {
   font-size: 0.75rem;
   font-weight: 600;
-  color: #64748b;
+  color: var(--text-muted);
   white-space: nowrap;
 }
 
 .filter-select {
   padding: 0.4rem 0.75rem;
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--border-subtle);
   border-radius: 6px;
   font-size: 0.813rem;
-  color: #0f172a;
-  background: white;
+  color: var(--text-primary);
+  background: var(--bg-card);
   cursor: pointer;
   transition: all 0.2s;
   font-weight: 500;
   min-width: 140px;
 }
 
-.filter-select:hover {
-  border-color: #94a3b8;
-}
-
-.filter-select:focus {
-  outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
+.filter-select:hover  { border-color: var(--text-th); }
+.filter-select:focus  { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
 
 .reset-filters-btn {
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0.4rem;
-  background: white;
-  border: 1px solid #e2e8f0;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
   border-radius: 6px;
-  color: #64748b;
+  color: var(--text-muted);
   cursor: pointer;
   transition: all 0.2s;
   flex-shrink: 0;
 }
 
 .reset-filters-btn:hover:not(:disabled) {
-  background: #f8fafc;
-  border-color: #cbd5e1;
-  color: #0f172a;
+  background: var(--bg-row-hover);
+  border-color: var(--border-subtle);
+  color: var(--text-primary);
 }
 
-.reset-filters-btn:disabled {
-  opacity: 0.3;
-  cursor: not-allowed;
-}
-
-.reset-filters-btn svg {
-  width: 18px;
-  height: 18px;
-}
+.reset-filters-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.reset-filters-btn svg      { width: 18px; height: 18px; }
 </style>

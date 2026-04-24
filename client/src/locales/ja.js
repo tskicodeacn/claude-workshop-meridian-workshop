@@ -6,6 +6,8 @@ export default {
     orders: '注文',
     finance: '財務',
     demandForecast: '需要予測',
+    reports: 'レポート',
+    restocking: '補充',
     companyName: '触媒コンポーネンツ',
     subtitle: '在庫管理システム'
   },
@@ -185,6 +187,59 @@ export default {
       change: '変化',
       trend: 'トレンド',
       period: '期間'
+    }
+  },
+
+  // Restocking
+  restocking: {
+    title: '補充推奨',
+    description: '現在の在庫レベルと需要予測に基づく発注推奨',
+    budgetCeiling: '予算上限',
+    budgetPlaceholder: '予算を入力（任意）',
+    applyBudget: '適用',
+    clearBudget: 'クリア',
+    itemsToRestock: '補充アイテム数',
+    totalEstimatedCost: '推定総費用',
+    budgetRemaining: '残予算',
+    highPriorityItems: '高優先度アイテム',
+    noBudget: '制限なし',
+    noRecommendations: '現在のフィルターでは補充不要です。',
+    table: {
+      sku: 'SKU',
+      name: 'アイテム名',
+      warehouse: '倉庫',
+      inStock: '在庫数',
+      reorderPoint: '発注点',
+      daysOfStock: '在庫日数',
+      recommendedQty: '推奨数量',
+      estimatedCost: '推定費用',
+      priority: '優先度',
+      trend: 'トレンド'
+    }
+  },
+
+  // Reports
+  reports: {
+    title: 'パフォーマンスレポート',
+    description: '四半期業績指標と月次トレンドを確認',
+    quarterlyPerformance: '四半期業績',
+    monthlyRevenueTrend: '月次収益トレンド',
+    monthOverMonth: '前月比分析',
+    totalRevenueYTD: '年初来総収益',
+    avgMonthlyRevenue: '月平均収益',
+    totalOrdersYTD: '年初来総注文数',
+    bestQuarter: '最高パフォーマンス四半期',
+    table: {
+      quarter: '四半期',
+      totalOrders: '総注文数',
+      totalRevenue: '総収益',
+      avgOrderValue: '平均注文額',
+      fulfillmentRate: '履行率',
+      month: '月',
+      orders: '注文数',
+      revenue: '収益',
+      change: '変化',
+      growthRate: '成長率'
     }
   },
 

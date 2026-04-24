@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meridian Components — System Architecture</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #0f172a;
+    color: #e2e8f0;
+    min-height: 100vh;
+    padding: 2rem;
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
+  .page-header h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #f1f5f9;
+    letter-spacing: -0.02em;
+  }
+  .page-header p {
+    color: #64748b;
+    font-size: 0.9rem;
+    margin-top: 0.4rem;
+  }
+  .badge {
+    display: inline-block;
+    background: #1e3a5f;
+    color: #60a5fa;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    margin-left: 0.5rem;
+    vertical-align: middle;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  /* ── Top-level layout ─────────────────────────────────── */
+  .arch-grid {
+    display: grid;
+    grid-template-columns: 1fr 60px 1fr;
+    grid-template-rows: auto auto auto;
+    gap: 0;
+    max-width: 1100px;
+    margin: 0 auto;
+    align-items: start;
+  }
+
+  /* ── Panels ───────────────────────────────────────────── */
+  .panel {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+  }
+  .panel-title {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #64748b;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #334155;
+  }
+  .panel.frontend { border-top: 3px solid #3b82f6; }
+  .panel.backend  { border-top: 3px solid #10b981; }
+  .panel.data     { border-top: 3px solid #f59e0b; }
+  .panel.tests    { border-top: 3px solid #a855f7; }
+
+  /* ── Arrow column ─────────────────────────────────────── */
+  .arrow-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-top: 3rem;
+  }
+  .arrow-label {
+    font-size: 0.6rem;
+    color: #475569;
+    text-align: center;
+    line-height: 1.4;
+    margin-bottom: 0.25rem;
+  }
+  .arrow {
+    color: #475569;
+    font-size: 1.2rem;
+    line-height: 1;
+  }
+
+  /* ── Views grid ───────────────────────────────────────── */
+  .views-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+  }
+  .view-chip {
+    background: #0f172a;
+    border: 1px solid #334155;
+    border-radius: 6px;
+    padding: 0.35rem 0.6rem;
+    font-size: 0.75rem;
+    color: #94a3b8;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .view-chip .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #3b82f6;
+    flex-shrink: 0;
+  }
+  .view-chip.new .dot { background: #10b981; }
+
+  /* ── Composables row ──────────────────────────────────── */
+  .composables-row {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+  }
+  .composable-chip {
+    background: #172554;
+    border: 1px solid #1e3a5f;
+    border-radius: 6px;
+    padding: 0.3rem 0.7rem;
+    font-size: 0.72rem;
+    color: #93c5fd;
+    font-family: 'Menlo', 'Consolas', monospace;
+  }
+
+  /* ── Stack tags ───────────────────────────────────────── */
+  .stack-row {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    margin-top: 0.75rem;
+  }
+  .stack-tag {
+    background: #0f172a;
+    border: 1px solid #334155;
+    border-radius: 4px;
+    padding: 0.2rem 0.5rem;
+    font-size: 0.68rem;
+    color: #64748b;
+    font-family: 'Menlo', 'Consolas', monospace;
+  }
+
+  /* ── Endpoints list ───────────────────────────────────── */
+  .endpoint-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+  .endpoint-list li {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    font-size: 0.73rem;
+  }
+  .method {
+    font-size: 0.6rem;
+    font-weight: 700;
+    font-family: monospace;
+    padding: 0.1rem 0.35rem;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+  .method.get  { background: #14532d; color: #4ade80; }
+  .method.post { background: #1e3a5f; color: #60a5fa; }
+  .method.del  { background: #4c0519; color: #f87171; }
+  .method.patch{ background: #3b1f00; color: #fb923c; }
+
+  .path {
+    color: #94a3b8;
+    font-family: 'Menlo', 'Consolas', monospace;
+    font-size: 0.7rem;
+  }
+  .ep-desc {
+    color: #475569;
+    font-size: 0.68rem;
+    margin-left: auto;
+    white-space: nowrap;
+  }
+
+  /* ── Section headers within panels ───────────────────── */
+  .sub-title {
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: #475569;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 0.75rem 0 0.4rem;
+  }
+
+  /* ── Data sources ─────────────────────────────────────── */
+  .data-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.4rem;
+  }
+  .data-item {
+    background: #0f172a;
+    border: 1px solid #334155;
+    border-radius: 6px;
+    padding: 0.4rem 0.6rem;
+  }
+  .data-item .name {
+    font-size: 0.72rem;
+    color: #fbbf24;
+    font-family: monospace;
+  }
+  .data-item .desc {
+    font-size: 0.65rem;
+    color: #475569;
+    margin-top: 0.1rem;
+  }
+
+  /* ── Test section ─────────────────────────────────────── */
+  .test-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+  .test-box {
+    background: #0f172a;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 0.75rem;
+  }
+  .test-box h4 {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #a855f7;
+    margin-bottom: 0.4rem;
+  }
+  .test-box .item {
+    font-size: 0.68rem;
+    color: #64748b;
+    padding: 0.15rem 0;
+    font-family: monospace;
+  }
+  .test-count {
+    font-size: 0.65rem;
+    color: #475569;
+    margin-top: 0.4rem;
+  }
+
+  /* ── Bottom row spans full width ─────────────────────── */
+  .full-width {
+    grid-column: 1 / -1;
+    margin-top: 1.25rem;
+  }
+  .bottom-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    max-width: 1100px;
+    margin: 1.25rem auto 0;
+  }
+
+  /* ── i18n panel ───────────────────────────────────────── */
+  .locale-row {
+    display: flex;
+    gap: 0.5rem;
+  }
+  .locale-chip {
+    flex: 1;
+    background: #0f172a;
+    border: 1px solid #334155;
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.72rem;
+    color: #94a3b8;
+    text-align: center;
+  }
+  .locale-chip .flag { font-size: 1rem; display: block; margin-bottom: 0.2rem; }
+  .locale-chip .currency { font-size: 0.65rem; color: #475569; margin-top: 0.2rem; }
+
+  /* ── Footer ───────────────────────────────────────────── */
+  .footer {
+    text-align: center;
+    margin-top: 2rem;
+    font-size: 0.7rem;
+    color: #334155;
+  }
+
+  .sep { height: 1px; background: #1e293b; margin: 0.6rem 0; }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>Meridian Components — System Architecture <span class="badge">Current State</span></h1>
+  <p>Delivered by Catalyst Components Consulting · April 2026</p>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- Main 3-column grid: Frontend ←→ Backend               -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="arch-grid">
+
+  <!-- ── FRONTEND ──────────────────────────────────────── -->
+  <div class="panel frontend">
+    <div class="panel-title">Frontend — Vue 3 · :3000</div>
+
+    <div class="sub-title">Views</div>
+    <div class="views-grid">
+      <div class="view-chip"><span class="dot"></span>Dashboard</div>
+      <div class="view-chip"><span class="dot"></span>Inventory</div>
+      <div class="view-chip"><span class="dot"></span>Orders</div>
+      <div class="view-chip"><span class="dot"></span>Demand Forecast</div>
+      <div class="view-chip"><span class="dot"></span>Spending / Finance</div>
+      <div class="view-chip"><span class="dot"></span>Reports</div>
+      <div class="view-chip new"><span class="dot"></span>Restocking ✦</div>
+      <div class="view-chip"><span class="dot"></span>Backlog</div>
+    </div>
+
+    <div class="sub-title">Shared composables</div>
+    <div class="composables-row">
+      <div class="composable-chip">useFilters()</div>
+      <div class="composable-chip">useI18n()</div>
+      <div class="composable-chip">useAuth()</div>
+    </div>
+
+    <div class="sub-title">Global components</div>
+    <div class="composables-row">
+      <div class="composable-chip" style="background:#1a1f35;border-color:#2d3561;color:#a5b4fc;">FilterBar</div>
+      <div class="composable-chip" style="background:#1a1f35;border-color:#2d3561;color:#a5b4fc;">LanguageSwitcher</div>
+      <div class="composable-chip" style="background:#1a1f35;border-color:#2d3561;color:#a5b4fc;">ProfileMenu</div>
+    </div>
+
+    <div class="stack-row">
+      <div class="stack-tag">Vue 3.4</div>
+      <div class="stack-tag">Vue Router 4</div>
+      <div class="stack-tag">Vite 5</div>
+      <div class="stack-tag">Axios</div>
+    </div>
+  </div>
+
+  <!-- ── ARROW ─────────────────────────────────────────── -->
+  <div class="arrow-col">
+    <div class="arrow-label">HTTP / JSON<br>Axios</div>
+    <div class="arrow">⟷</div>
+    <div style="font-size:0.55rem;color:#334155;margin-top:0.4rem;text-align:center;">CORS<br>enabled</div>
+  </div>
+
+  <!-- ── BACKEND ───────────────────────────────────────── -->
+  <div class="panel backend">
+    <div class="panel-title">Backend — FastAPI · :8001</div>
+
+    <ul class="endpoint-list">
+      <li><span class="method get">GET</span><span class="path">/api/inventory</span><span class="ep-desc">stock levels</span></li>
+      <li><span class="method get">GET</span><span class="path">/api/inventory/{id}</span></li>
+      <li><span class="method get">GET</span><span class="path">/api/orders</span><span class="ep-desc">order list</span></li>
+      <li><span class="method get">GET</span><span class="path">/api/orders/{id}</span></li>
+      <li><span class="method get">GET</span><span class="path">/api/demand</span><span class="ep-desc">forecasts</span></li>
+      <li><span class="method get">GET</span><span class="path">/api/backlog</span><span class="ep-desc">+ PO status</span></li>
+      <li><span class="method get">GET</span><span class="path">/api/dashboard/summary</span></li>
+      <li><span class="method get">GET</span><span class="path">/api/spending/summary</span></li>
+      <li><span class="method get">GET</span><span class="path">/api/spending/monthly</span></li>
+      <li><span class="method get">GET</span><span class="path">/api/spending/categories</span></li>
+      <li><span class="method get">GET</span><span class="path">/api/spending/transactions</span></li>
+      <li><span class="method get">GET</span><span class="path">/api/reports/quarterly</span></li>
+      <li><span class="method get">GET</span><span class="path">/api/reports/monthly-trends</span></li>
+      <li><span class="method get">GET</span><span class="path">/api/restocking</span><span class="ep-desc">✦ new</span></li>
+      <li><span class="method post">POST</span><span class="path">/api/purchase-orders</span></li>
+      <li><span class="method get">GET</span><span class="path">/api/purchase-orders/{id}</span></li>
+      <li><span class="method get">GET</span><span class="path">/api/tasks</span></li>
+      <li><span class="method post">POST</span><span class="path">/api/tasks</span></li>
+      <li><span class="method patch">PATCH</span><span class="path">/api/tasks/{id}</span></li>
+      <li><span class="method del">DEL</span><span class="path">/api/tasks/{id}</span></li>
+    </ul>
+
+    <div class="stack-row">
+      <div class="stack-tag">Python 3</div>
+      <div class="stack-tag">FastAPI</div>
+      <div class="stack-tag">Pydantic</div>
+      <div class="stack-tag">Uvicorn</div>
+      <div class="stack-tag">uv</div>
+    </div>
+  </div>
+
+</div><!-- /arch-grid -->
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- Bottom row: Data + i18n   |   Tests                   -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="bottom-row">
+
+  <!-- Data + i18n -->
+  <div style="display:flex;flex-direction:column;gap:1.25rem;">
+
+    <div class="panel data">
+      <div class="panel-title">Data Layer — In-Memory (JSON files)</div>
+      <div class="data-grid">
+        <div class="data-item"><div class="name">inventory.json</div><div class="desc">SKUs, stock, reorder points</div></div>
+        <div class="data-item"><div class="name">orders.json</div><div class="desc">Order history + status</div></div>
+        <div class="data-item"><div class="name">demand_forecasts.json</div><div class="desc">30-day forecasts per SKU</div></div>
+        <div class="data-item"><div class="name">backlog_items.json</div><div class="desc">Procurement backlog</div></div>
+        <div class="data-item"><div class="name">spending.json</div><div class="desc">Finance summaries</div></div>
+        <div class="data-item"><div class="name">transactions.json</div><div class="desc">Recent transactions</div></div>
+        <div class="data-item"><div class="name">purchase_orders.json</div><div class="desc">POs linked to backlog</div></div>
+        <div class="data-item" style="border-color:#475569"><div class="name" style="color:#94a3b8;">tasks[ ]</div><div class="desc">In-memory only, not persisted</div></div>
+      </div>
+      <div style="margin-top:0.75rem;font-size:0.65rem;color:#475569;">
+        ⚠ No database — all data loaded at startup from <code style="color:#64748b;">server/data/*.json</code>. Writes (tasks, POs) are lost on restart.
+      </div>
+    </div>
+
+    <div class="panel" style="border-top:3px solid #06b6d4;">
+      <div class="panel-title">i18n — Locale System</div>
+      <div class="locale-row">
+        <div class="locale-chip">
+          <span class="flag">🇺🇸</span>
+          English
+          <div class="currency">USD · $</div>
+        </div>
+        <div class="locale-chip">
+          <span class="flag">🇯🇵</span>
+          Japanese
+          <div class="currency">JPY · ¥</div>
+        </div>
+      </div>
+      <div style="margin-top:0.6rem;font-size:0.65rem;color:#475569;line-height:1.6;">
+        Locale stored in <code style="color:#64748b;">localStorage</code>.
+        Switching locale changes: UI text, currency symbol, product/customer/warehouse name translations, date formatting.
+        Composable: <code style="color:#93c5fd;">useI18n()</code>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Tests -->
+  <div class="panel tests">
+    <div class="panel-title">Test Coverage</div>
+    <div class="test-row">
+      <div class="test-box">
+        <h4>E2E — Playwright</h4>
+        <div class="item">dashboard.spec.js</div>
+        <div class="item">inventory.spec.js</div>
+        <div class="item">orders.spec.js</div>
+        <div class="item">reports.spec.js</div>
+        <div class="item">restocking.spec.js</div>
+        <div class="test-count">39 tests · all passing</div>
+        <div class="stack-row" style="margin-top:0.5rem;">
+          <div class="stack-tag">Chromium</div>
+          <div class="stack-tag">headless</div>
+        </div>
+      </div>
+      <div class="test-box">
+        <h4>Backend — pytest</h4>
+        <div class="item">test_inventory.py</div>
+        <div class="item">test_orders.py</div>
+        <div class="item">test_dashboard.py</div>
+        <div class="item">test_misc_endpoints.py</div>
+        <div class="test-count">FastAPI TestClient</div>
+        <div class="stack-row" style="margin-top:0.5rem;">
+          <div class="stack-tag">pytest</div>
+          <div class="stack-tag">fixtures</div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:1rem;font-size:0.65rem;color:#475569;line-height:1.6;">
+      E2E tests run against <code style="color:#64748b;">localhost:3000</code>.
+      Config: <code style="color:#64748b;">tests/e2e/playwright.config.js</code>.<br>
+      Run: <code style="color:#64748b;">cd tests &amp;&amp; npx playwright test</code>
+    </div>
+  </div>
+
+</div><!-- /bottom-row -->
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- Limitations / Handoff notes                           -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div style="max-width:1100px;margin:1.25rem auto 0;">
+  <div class="panel" style="border-top:3px solid #ef4444;">
+    <div class="panel-title">Handoff Notes for Meridian IT</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;font-size:0.72rem;color:#94a3b8;line-height:1.7;">
+      <div>
+        <div style="color:#f87171;font-weight:600;margin-bottom:0.25rem;">No persistence layer</div>
+        Data is loaded from static JSON files at server startup. Tasks and purchase orders created at runtime are lost on restart. Production deployment requires a real database (PostgreSQL recommended).
+      </div>
+      <div>
+        <div style="color:#fbbf24;font-weight:600;margin-bottom:0.25rem;">No authentication</div>
+        The current build has no auth — <code style="color:#64748b;">useAuth()</code> returns a hardcoded mock user. Meridian SSO integration is required before production.
+      </div>
+      <div>
+        <div style="color:#4ade80;font-weight:600;margin-bottom:0.25rem;">Dev-only CORS</div>
+        CORS is open (<code style="color:#64748b;">allow_origins=["*"]</code>). Restrict to the production frontend domain before deployment.
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  Generated April 2026 · Catalyst Components Consulting · For Meridian Components internal use
+</div>
+
+</body>
+</html>

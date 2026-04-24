@@ -6,6 +6,8 @@ export default {
     orders: 'Orders',
     finance: 'Finance',
     demandForecast: 'Demand Forecast',
+    reports: 'Reports',
+    restocking: 'Restocking',
     companyName: 'Catalyst Components',
     subtitle: 'Inventory Management System'
   },
@@ -185,6 +187,59 @@ export default {
       change: 'Change',
       trend: 'Trend',
       period: 'Period'
+    }
+  },
+
+  // Restocking
+  restocking: {
+    title: 'Restocking Recommendations',
+    description: 'Purchase order recommendations based on current stock levels and demand forecasts',
+    budgetCeiling: 'Budget Ceiling',
+    budgetPlaceholder: 'Enter budget (optional)',
+    applyBudget: 'Apply',
+    clearBudget: 'Clear',
+    itemsToRestock: 'Items to Restock',
+    totalEstimatedCost: 'Total Estimated Cost',
+    budgetRemaining: 'Budget Remaining',
+    highPriorityItems: 'High Priority Items',
+    noBudget: 'No limit',
+    noRecommendations: 'No restocking needed for the current filters.',
+    table: {
+      sku: 'SKU',
+      name: 'Item Name',
+      warehouse: 'Warehouse',
+      inStock: 'In Stock',
+      reorderPoint: 'Reorder Point',
+      daysOfStock: 'Days of Stock',
+      recommendedQty: 'Recommended Qty',
+      estimatedCost: 'Est. Cost',
+      priority: 'Priority',
+      trend: 'Trend'
+    }
+  },
+
+  // Reports
+  reports: {
+    title: 'Performance Reports',
+    description: 'View quarterly performance metrics and monthly trends',
+    quarterlyPerformance: 'Quarterly Performance',
+    monthlyRevenueTrend: 'Monthly Revenue Trend',
+    monthOverMonth: 'Month-over-Month Analysis',
+    totalRevenueYTD: 'Total Revenue (YTD)',
+    avgMonthlyRevenue: 'Avg Monthly Revenue',
+    totalOrdersYTD: 'Total Orders (YTD)',
+    bestQuarter: 'Best Performing Quarter',
+    table: {
+      quarter: 'Quarter',
+      totalOrders: 'Total Orders',
+      totalRevenue: 'Total Revenue',
+      avgOrderValue: 'Avg Order Value',
+      fulfillmentRate: 'Fulfillment Rate',
+      month: 'Month',
+      orders: 'Orders',
+      revenue: 'Revenue',
+      change: 'Change',
+      growthRate: 'Growth Rate'
     }
   },
 

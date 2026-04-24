@@ -8,6 +8,24 @@
     <div v-if="loading" class="loading">{{ t('common.loading') }}</div>
     <div v-else-if="error" class="error">{{ error }}</div>
     <div v-else>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value">{{ items.length }}</div>
+          <div class="stat-label">{{ t('inventory.totalItems') }}</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">{{ currencySymbol }}{{ totalValue.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 }) }}</div>
+          <div class="stat-label">{{ t('inventory.totalValue') }}</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">{{ lowStockCount }}</div>
+          <div class="stat-label">{{ t('inventory.lowStockItems') }}</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">{{ warehouseCount }}</div>
+          <div class="stat-label">{{ t('inventory.warehouses') }}</div>
+        </div>
+      </div>
       <div class="card">
         <div class="card-header">
           <h3 class="card-title">{{ t('inventory.stockLevels') }} ({{ filteredItems.length }} {{ t('inventory.skus') }})</h3>
@@ -128,6 +146,18 @@ export default {
       }
     }
 
+    const totalValue = computed(() =>
+      items.value.reduce((sum, item) => sum + item.quantity_on_hand * item.unit_cost, 0)
+    )
+
+    const lowStockCount = computed(() =>
+      items.value.filter(item => item.quantity_on_hand <= item.reorder_point).length
+    )
+
+    const warehouseCount = computed(() =>
+      new Set(items.value.map(item => item.location)).size
+    )
+
     // Computed property to filter items by search query and sort by stock status
     const filteredItems = computed(() => {
       let filtered = items.value
@@ -210,6 +240,9 @@ export default {
       items,
       searchQuery,
       filteredItems,
+      totalValue,
+      lowStockCount,
+      warehouseCount,
       getStockStatus,
       getStockStatusClass,
       translateCategory,
