@@ -3,6 +3,7 @@ import { test, expect } from '@playwright/test'
 // Dashboard (Overview) — smoke tests and critical flows
 test.describe('Dashboard', () => {
   test.beforeEach(async ({ page }) => {
+    await page.addInitScript(() => localStorage.removeItem('app-locale'))
     await page.goto('/')
   })
 
@@ -32,7 +33,7 @@ test.describe('Dashboard', () => {
     await expect(page.getByText('Time Period')).toBeVisible()
     await expect(page.getByText('Location')).toBeVisible()
     await expect(page.getByText('Category')).toBeVisible()
-    await expect(page.getByText('Order Status')).toBeVisible()
+    // Order Status filter is only shown on the Orders page
   })
 
   test('inventory shortages table is visible', async ({ page }) => {
@@ -57,6 +58,7 @@ test.describe('Dashboard', () => {
     page.on('console', msg => {
       if (msg.type() === 'error') errors.push(msg.text())
     })
+    await page.addInitScript(() => localStorage.removeItem('app-locale'))
     await page.goto('/')
     await page.waitForTimeout(1000)
     // Filter known non-critical errors (favicon, etc.)

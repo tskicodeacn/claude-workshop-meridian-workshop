@@ -3,6 +3,7 @@ import { test, expect } from '@playwright/test'
 // Orders view — order list, status cards, filtering
 test.describe('Orders', () => {
   test.beforeEach(async ({ page }) => {
+    await page.addInitScript(() => localStorage.removeItem('app-locale'))
     await page.goto('/orders')
     await page.waitForLoadState('networkidle')
   })

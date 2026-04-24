@@ -3,6 +3,7 @@ import { test, expect } from '@playwright/test'
 // Restocking view — budget ceiling, recommendations, filter integration
 test.describe('Restocking', () => {
   test.beforeEach(async ({ page }) => {
+    await page.addInitScript(() => localStorage.removeItem('app-locale'))
     await page.goto('/restocking')
     await page.waitForLoadState('networkidle')
   })
@@ -68,7 +69,8 @@ test.describe('Restocking', () => {
   })
 
   test('warehouse filter updates recommendations', async ({ page }) => {
-    const locationFilter = page.locator('select').nth(1)
+    // Restocking has no Time Period filter: Location is nth(0), Category is nth(1)
+    const locationFilter = page.locator('select').nth(0)
     await locationFilter.selectOption('Tokyo')
     await page.waitForLoadState('networkidle')
 
@@ -77,8 +79,8 @@ test.describe('Restocking', () => {
   })
 
   test('category filter updates recommendations', async ({ page }) => {
-    const categoryFilter = page.locator('select').nth(2)
-    await categoryFilter.selectOption('Sensors')
+    const categoryFilter = page.locator('select').nth(1)
+    await categoryFilter.selectOption('sensors')
     await page.waitForLoadState('networkidle')
 
     await expect(page.getByRole('heading', { name: 'Restocking Recommendations' }).first()).toBeVisible()

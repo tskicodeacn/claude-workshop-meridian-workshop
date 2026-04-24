@@ -15,7 +15,8 @@
       "Bash(gh auth *)",
       "Bash(git remote *)",
       "mcp__playwright__browser_wait_for",
-      "mcp__playwright__browser_evaluate"
+      "mcp__playwright__browser_evaluate",
+      "Bash(npx playwright *)"
     ],
     "additionalDirectories": [
       "c:\\Users\\tomasz.skibicki\\OneDrive - Accenture\\_SZKOLENIA\\ClaudeCode\\claude-workshop\\git-meridian-workshop-main\\proposal"

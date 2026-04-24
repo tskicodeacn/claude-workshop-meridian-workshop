@@ -3,6 +3,7 @@ import { test, expect } from '@playwright/test'
 // Inventory view — stock levels and filtering
 test.describe('Inventory', () => {
   test.beforeEach(async ({ page }) => {
+    await page.addInitScript(() => localStorage.removeItem('app-locale'))
     await page.goto('/inventory')
     await page.waitForLoadState('networkidle')
   })
@@ -29,7 +30,8 @@ test.describe('Inventory', () => {
   test('filter by warehouse narrows results', async ({ page }) => {
     const allRows = await page.locator('tbody tr').count()
 
-    const locationFilter = page.locator('select').nth(1)
+    // Inventory has no Time Period filter: Location is nth(0), Category is nth(1)
+    const locationFilter = page.locator('select').nth(0)
     await locationFilter.selectOption('Tokyo')
     await page.waitForTimeout(500)
 
@@ -40,8 +42,8 @@ test.describe('Inventory', () => {
   test('filter by category narrows results', async ({ page }) => {
     const allRows = await page.locator('tbody tr').count()
 
-    const categoryFilter = page.locator('select').nth(2)
-    await categoryFilter.selectOption('Sensors')
+    const categoryFilter = page.locator('select').nth(1)
+    await categoryFilter.selectOption('sensors')
     await page.waitForTimeout(500)
 
     const filteredRows = await page.locator('tbody tr').count()

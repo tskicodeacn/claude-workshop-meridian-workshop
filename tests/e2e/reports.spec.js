@@ -4,6 +4,7 @@ import { test, expect } from '@playwright/test'
 // These tests cover the R1 defects that were remediated
 test.describe('Reports', () => {
   test.beforeEach(async ({ page }) => {
+    await page.addInitScript(() => localStorage.removeItem('app-locale'))
     await page.goto('/reports')
     await page.waitForLoadState('networkidle')
   })
@@ -65,6 +66,7 @@ test.describe('Reports', () => {
     page.on('console', msg => {
       if (msg.type() === 'log') logs.push(msg.text())
     })
+    await page.addInitScript(() => localStorage.removeItem('app-locale'))
     await page.goto('/reports')
     await page.waitForLoadState('networkidle')
     await page.waitForTimeout(500)
